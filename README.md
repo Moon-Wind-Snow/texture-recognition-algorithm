@@ -1,8 +1,6 @@
-```
 # Texture‑Recognition‑of‑Vision‑Based‑Tactile‑Sensor
 This repository implements material texture recognition for robot end‑effectors using vision‑based tactile sensor images.
 The project includes dataset construction, comparative studies of ConvNeXt and DINOv2, a hybrid fusion model TRGFormer, multi‑stage progressive transfer‑learning, and a producer‑consumer multi‑thread asynchronous real‑time inference pipeline.
-TRGFormer achieves **90.23 % test accuracy** on our self‑collected 13‑class tactile texture dataset.
 
 ## 1. Project Overview
 With the rapid advance of embodied intelligence, tactile perception plays a critical role in enabling robots to perform dexterous manipulation. Vision‑based tactile sensors convert physical contact deformation into high‑resolution images, allowing robots to perceive surface textures, roughness, and intrinsic material properties.
@@ -116,6 +114,18 @@ transformers==5.17.0
 > CUDA‑specific wheel tags like `+cu128` cannot be resolved by plain pip.
 > Please install PyTorch from the [official PyTorch website](https://pytorch.org/) matching your CUDA / CPU environment.
 > An optional conda environment backup file `environment.yml` is also provided for local reference only.
+
+## Optional Third‑Party Provider: OrcaRouter
+
+This repository supports **OrcaRouter** as an optional inference‑backend provider. It is completely **non‑mandatory**. You can run all models locally without any external API service.
+
+- If you enable `provider: orca_router` in your config, inference requests will be sent to OrcaRouter’s adaptive‑routing API endpoint.
+- You need to supply your own `ORCA_ROUTER_KEY` environment variable.
+- As an approved open‑source project on the OrcaRouter open‑source program, **the maintainer receives proportional revenue share based on user spend via this provider**.
+- No code‑level lock‑in: you may always switch back to local inference or other self‑hosted backends.
+
+> 
+> Note: Revenue share is handled entirely on OrcaRouter’s platform side. This repository’s source code remains MIT‑licensed, fully open‑source and free to download, modify and run locally. Revenue share only applies to traffic routed through the OrcaRouter API service.
 
 ## 6. Repository Structure
 
