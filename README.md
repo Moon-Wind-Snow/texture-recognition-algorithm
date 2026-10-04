@@ -1,3 +1,4 @@
+```
 # Texture‑Recognition‑of‑Vision‑Based‑Tactile‑Sensor
 This repository implements material texture recognition for robot end‑effectors using vision‑based tactile sensor images.
 The project includes dataset construction, comparative studies of ConvNeXt and DINOv2, a hybrid fusion model TRGFormer, multi‑stage progressive transfer‑learning, and a producer‑consumer multi‑thread asynchronous real‑time inference pipeline.
@@ -76,11 +77,11 @@ Performance gain: from **10‑12 FPS (single‑thread serial) → 25‑30 FP
 
 ## 5. Environment Requirements
 Recommended environment:
-- Python >= 3.14
+- Python >= 3.10
 - PyTorch 2.7.0 (CUDA 12.8)
 - torchvision 0.22.0 (CUDA 12.8)
 - numpy, opencv‑python, scikit‑image, scikit‑learn
-- matplotlib, scipy, tqdm
+- matplotlib, seaborn, scipy, tqdm
 - timm, transformers
 
 Install dependencies:
@@ -89,5 +90,139 @@ Install dependencies:
 python -m venv .venv
 source .venv/bin/activate
 
-# install core packages
+# install core python packages
 pip install -r requirements.txt
+```
+
+Core pinned versions in [requirements.txt](requirements.txt):
+
+```
+numpy==2.2.6
+opencv-python==5.0.0.93
+scikit-image
+scikit-learn==1.7.2
+matplotlib==3.10.9
+seaborn==0.13.2
+pillow==12.3.0
+scipy==1.15.3
+tqdm==4.70.1
+timm==1.0.29
+transformers==5.17.0
+```
+
+> 
+> ⚠️ Important note:
+> `torch` and `torchvision` are **NOT included in requirements.txt**.
+> CUDA‑specific wheel tags like `+cu128` cannot be resolved by plain pip.
+> Please install PyTorch from the [official PyTorch website](https://pytorch.org/) matching your CUDA / CPU environment.
+> An optional conda environment backup file `environment.yml` is also provided for local reference only.
+
+## 6. Repository Structure
+
+```
+texture‑recognition‑visuotactile/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── LICENSE
+├── environment.yml               # Conda environment backup (local reference)
+├── run.py                         # Main program entry
+├── ConvNeXt_DINOv2/               # TRGFormer hybrid fusion model code
+│   ├── best_fusion_model.pth      # Fusion model checkpoint
+│   ├── eval.py                    # Evaluation script for fusion model
+│   ├── fusion_confusion_matrix.png
+│   ├── torch_hub/
+│   └── train.py                   # Train fusion TRGFormer model
+├── ResNet18_convetional/          # ResNet18 baseline experiment
+│   ├── confusion_matrix.png
+│   ├── eval.py
+│   └── train.py
+├── all_textured_groups/           # Dataset preprocessing & raw data folder
+│   ├── best_model.pth
+│   ├── dataset/
+│   ├── extract_full_cont.py      # Frame extraction script
+│   ├── extract_mid_cont.py
+│   ├── test_original_video/
+│   └── train_and_val_original_video/
+├── including_non_textured_groups/ # Extended dataset group
+└── outputs/                       # Generated figures, logs (runtime‑created)
+```
+
+> 
+> Note:
+> 
+> 
+> - Model checkpoint `.pth` weight files, raw video / dataset files are excluded via `.gitignore`, **do not push large weights and raw data to GitHub**.
+> - `outputs/` directory will be automatically generated at runtime.
+
+## 7. Typical Usage
+
+### 7.1 Dataset frame extraction
+
+```
+# Extract valid tactile frames from raw video sequences
+python all_textured_groups/extract_full_cont.py
+python all_textured_groups/extract_mid_cont.py
+```
+
+### 7.2 Train TRGFormer fusion model (ConvNeXt + DINOv2)
+
+```
+cd ConvNeXt_DINOv2
+python train.py
+```
+
+### 7.3 Evaluate fusion model
+
+```
+cd ConvNeXt_DINOv2
+python eval.py
+```
+
+### 7.4 Run main program / real‑time pipeline
+
+```
+python run.py
+```
+
+> 
+> For ResNet18 baseline experiment:
+
+```
+cd ResNet18_convetional
+python train.py
+python eval.py
+```
+
+## 8. Training & Deployment Notes
+
+- Dataset split must be operated on **sample‑instance / video‑sequence level**, not simple frame‑wise random split, to prevent data‑leakage and over‑optimistic metrics.
+- Multi‑stage progressive transfer‑learning is critical for avoiding destroying pre‑trained weights on small tactile dataset.
+- When deploying real‑time pipeline: tune queue `maxsize` to balance latency and anti‑jitter; drop oldest frame when queue is full for real‑time scenario.
+- Robustness test: Gaussian blur / low‑pass / high‑pass filtering can help analyze model frequency‑domain preference.
+
+## 9. Expected Outcomes
+
+- Off‑line high‑accuracy material texture classification on vision‑based tactile images.
+- Mechanism analysis of ConvNeXt / DINOv2 on tactile task: local high‑frequency vs global low‑frequency representation complementarity.
+- TRGFormer hybrid model combining CNN local texture and Transformer global modeling.
+- A complete real‑time multi‑thread inference solution for robot vision‑based tactile perception.
+- Baseline and code reference for further visuo‑tactile perception research.
+
+## 10. Future Directions
+
+- Light‑weight variant of TRGFormer for edge‑device deployment.
+- Introduce temporal sequence modeling for continuous tactile sliding frames.
+- Expand dataset with more material categories and diverse sensor conditions.
+- Combine tactile perception with robot closed‑loop grasping control.
+- Explore sim‑to‑real transfer for vision‑based tactile data generation.
+
+## 11. License
+
+This project is released under the [MIT License](LICENSE).
+You are free to use, modify and redistribute for research and educational purposes.
+See `LICENSE` for full license terms.
+
+## 12. Contact
+
+For questions, discussions or collaboration, please open an issue in this repository.
