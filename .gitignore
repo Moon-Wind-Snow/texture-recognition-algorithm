@@ -1,0 +1,32 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Model weights, checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Raw dataset, video data
+all_textured_groups/dataset/
+all_textured_groups/test_original_video/
+all_textured_groups/train_and_val_original_video/
+including_non_textured_groups/
+
+# Output figures, log files
+outputs/
+logs/
+*.log
+
+# IDE editor files
+.vscode/
+.idea/
+*.swp
+*.swo
